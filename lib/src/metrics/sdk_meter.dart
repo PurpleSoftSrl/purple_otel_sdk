@@ -2,9 +2,8 @@ import 'package:purple_otel_api/purple_otel_api.dart';
 import 'instruments.dart';
 
 final class SDKMeter implements Meter {
-  final InstrumentationScope _scope;
 
-  SDKMeter({required InstrumentationScope scope}) : _scope = scope;
+  SDKMeter();
 
   @override
   LongCounter createCounter(String name, {String? unit, String? description}) =>

@@ -20,7 +20,6 @@ final class ProtobufWriter {
   static const int _varint = 0;
   static const int _i64 = 1;
   static const int _lengthDelimited = 2;
-  static const int _i32 = 5;
 
   void writeInt32(int field, int value) {
     _writeField(field, _varint);

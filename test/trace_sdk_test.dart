@@ -1,4 +1,3 @@
-import 'package:purple_otel_api/purple_otel_api.dart' show spanContextKey;
 import 'package:purple_otel_sdk/purple_otel_sdk.dart';
 import 'package:test/test.dart';
 

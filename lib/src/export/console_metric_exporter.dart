@@ -2,9 +2,7 @@ import 'package:purple_otel_api/purple_otel_api.dart';
 import '../metrics/metric_data.dart';
 
 final class ConsoleMetricExporter implements MetricExporter {
-  final bool _pretty;
-
-  const ConsoleMetricExporter({bool pretty = true}) : _pretty = pretty;
+  const ConsoleMetricExporter();
 
   @override
   Future<ExportResult> export(List<Metric> items) async {

@@ -43,7 +43,4 @@ abstract final class OtlpCommonEncoder {
     if (scope.version != null) inner.writeString(2, scope.version!);
     w.writeMessage(field, inner);
   }
-
-  static int _nanoTime(DateTime dt) =>
-      dt.microsecondsSinceEpoch * 1000;
 }

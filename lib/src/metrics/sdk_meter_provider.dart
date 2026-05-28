@@ -5,16 +5,11 @@ import 'metric_reader.dart';
 import 'sdk_meter.dart';
 
 final class SDKMeterProvider implements MeterProvider {
-  final Resource _resource;
   final List<MetricReader> _readers;
-  final MetricCardinalityLimits _limits;
   final Map<String, SDKMeter> _meters = {};
-  final List<View> _views;
 
   final List<LongCounter> _allCounters = [];
   final List<DoubleCounter> _allDoubleCounters = [];
-  final List<LongUpDownCounter> _allUpDownCounters = [];
-  final List<DoubleUpDownCounter> _allDoubleUpDownCounters = [];
   final List<LongHistogramImpl> _allLongHistograms = [];
   final List<DoubleHistogramImpl> _allDoubleHistograms = [];
 
@@ -23,17 +18,12 @@ final class SDKMeterProvider implements MeterProvider {
     required List<MetricReader> readers,
     MetricCardinalityLimits? limits,
     List<View>? views,
-  })  : _resource = resource,
-        _readers = List.unmodifiable(readers),
-        _limits = limits ?? const MetricCardinalityLimits(),
-        _views = views ?? [];
+  })  : _readers = List.unmodifiable(readers);
 
   @override
   SDKMeter get(String name, {String? version, String? schemaUrl}) {
     final key = '${name}\x00${version ?? ''}\x00${schemaUrl ?? ''}';
-    return _meters.putIfAbsent(key, () => SDKMeter(
-      scope: InstrumentationScope(name: name, version: version, schemaUrl: schemaUrl),
-    ));
+    return _meters.putIfAbsent(key, () => SDKMeter());
   }
 
   void registerCounter(LongCounter counter) {

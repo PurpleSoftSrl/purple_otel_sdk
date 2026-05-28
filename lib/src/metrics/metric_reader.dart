@@ -9,7 +9,6 @@ enum Temporality { delta, cumulative }
 
 final class PeriodicExportingMetricReader implements MetricReader {
   final MetricExporter _exporter;
-  final Duration _interval;
   final Temporality _temporality;
   Timer? _timer;
   bool _shutdown = false;
@@ -26,7 +25,6 @@ final class PeriodicExportingMetricReader implements MetricReader {
     Duration interval = const Duration(seconds: 60),
     Temporality temporality = Temporality.delta,
   })  : _exporter = exporter,
-        _interval = interval,
         _temporality = temporality {
     _timer = Timer.periodic(interval, (_) => _collectAndExport());
   }

@@ -94,7 +94,7 @@ void main() {
 
   group('SDKMeter', () {
     test('creates instruments of correct types', () {
-      final meter = SDKMeter(scope: InstrumentationScope(name: 'test'));
+      final meter = SDKMeter();
       expect(meter.createCounter('c'), isA<LongCounter>());
       expect(meter.createUpDownCounter('u'), isA<LongUpDownCounter>());
       expect(meter.createDoubleHistogram('h'), isA<DoubleHistogramImpl>());
@@ -151,7 +151,7 @@ void main() {
 
   group('ConsoleMetricExporter', () {
     test('export returns success', () async {
-      const exporter = ConsoleMetricExporter(pretty: false);
+      const exporter = ConsoleMetricExporter();
       final result = await exporter.export([
         MetricCollection(counters: [], gauges: [], histograms: [], timestamp: DateTime.now()),
       ]);

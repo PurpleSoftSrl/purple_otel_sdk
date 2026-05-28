@@ -37,20 +37,6 @@ final class W3CTraceContextPropagator {
 
     if (traceId == null || spanId == null || flags == null) return context;
 
-    TraceState traceState = const TraceState.empty();
-    final tsHeader = carrier[_traceStateHeader];
-    if (tsHeader != null && tsHeader.isNotEmpty) {
-      traceState = TraceState.fromString(tsHeader);
-    }
-
-    final extractedCtx = SpanContext(
-      traceId: TraceId.fromBytes(traceId),
-      spanId: SpanId.fromBytes(spanId),
-      traceFlags: TraceFlags(flags),
-      traceState: traceState,
-      isRemote: true,
-    );
-
     return context;
   }
 
