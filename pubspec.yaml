@@ -1,0 +1,18 @@
+name: purple_otel_sdk
+description: OpenTelemetry SDK for Dart — concrete implementations of the PurpleOTel API.
+version: 0.1.0
+repository: https://github.com/your-org/purple_otel
+license: Apache-2.0
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  purple_otel_api:
+    path: ../purple_otel_api
+  http: ^1.5.0
+  collection: ^1.18.0
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^6.0.0
