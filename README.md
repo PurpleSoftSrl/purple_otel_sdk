@@ -414,7 +414,7 @@ OtlpHttpSpanExporter(endpoint: Uri.parse('https://my-collector.azurewebsites.net
 
 **This is the key differentiator.** PurpleOTel does auto-instrumentation. dartastic doesn't.
 
-### purple_otel_http — 1 Line
+### purple_otel_http — Now part of the SDK
 
 ```dart
 final client = OtelHttpClient(inner: http.Client(), tracer: tracer);
@@ -561,7 +561,6 @@ export PLOG_FILE_PATH=/var/log/app.log
 | Package | Description |
 |---------|-------------|
 | [purple_otel_api](https://pub.dev/packages/purple_otel_api) | API interfaces — zero dependencies |
-| [purple_otel_http](https://pub.dev/packages/purple_otel_http) | Auto-instrumentation for `package:http` |
 | [purple_otel_dio](https://pub.dev/packages/purple_otel_dio) | Auto-instrumentation for Dio |
 | [purple_otel_flutter](https://pub.dev/packages/purple_otel_flutter) | Auto-instrumentation for Flutter |
 | [purple_logger_otel_sdk](https://pub.dev/packages/purple_logger_otel_sdk) | Bridge: purple_logger → PurpleOTel |

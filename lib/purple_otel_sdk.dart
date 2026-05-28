@@ -17,6 +17,7 @@ export 'src/export/otlp_http_log_record_exporter.dart' show OtlpHttpLogRecordExp
 export 'src/export/otlp_http_span_exporter.dart' show OtlpHttpSpanExporter;
 export 'src/export/otlp_http_metric_exporter.dart' show OtlpHttpMetricExporter;
 export 'src/export/console_metric_exporter.dart' show ConsoleMetricExporter;
+export 'src/export/otel_http_client.dart' show OtelHttpClient;
 export 'src/context/zone_context_storage.dart' show ZoneContextStorage;
 export 'src/metrics/sdk_meter_provider.dart' show SDKMeterProvider;
 export 'src/metrics/sdk_meter.dart' show SDKMeter;
