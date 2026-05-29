@@ -2,13 +2,12 @@ import 'dart:typed_data';
 
 import 'package:purple_otel_api/purple_otel_api.dart';
 import '../metrics/metric_data.dart';
-import '../metrics/aggregation.dart';
-import '../metrics/instruments.dart';
 import '../otlp/protobuf_writer.dart';
 import '../otlp/otlp_common_encoder.dart';
 
 abstract final class OtlpMetricEncoder {
-  static Uint8List encode(List<Metric> metrics, {Resource? resource, InstrumentationScope? scope}) {
+  static Uint8List encode(List<Metric> metrics,
+      {Resource? resource, InstrumentationScope? scope}) {
     final request = ProtobufWriter();
     final resourceMetrics = ProtobufWriter();
 

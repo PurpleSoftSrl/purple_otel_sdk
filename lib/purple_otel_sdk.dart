@@ -24,3 +24,5 @@ export 'src/metrics/instruments.dart' show LongCounter, DoubleCounter, LongUpDow
 export 'src/metrics/metric_reader.dart' show PeriodicExportingMetricReader, Temporality;
 export 'src/metrics/metric_data.dart' show MetricPoint, HistogramPoint, MetricCollection;
 export 'src/metrics/aggregation.dart' show SumAggregator, HistogramAggregator, DoubleHistogramAggregator;
+export 'src/export/otel_http_client.dart' show OtelHttpClient;
+export 'src/export/in_memory_span_exporter.dart' show InMemorySpanExporter;

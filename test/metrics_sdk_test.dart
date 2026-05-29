@@ -28,8 +28,10 @@ void main() {
 
     test('different attributes create separate streams', () {
       final counter = LongCounter(100);
-      counter.add(5, attributes: Attributes.of({'path': AttributeValue.string('/a')}));
-      counter.add(3, attributes: Attributes.of({'path': AttributeValue.string('/b')}));
+      counter.add(5,
+          attributes: Attributes.of({'path': AttributeValue.string('/a')}));
+      counter.add(3,
+          attributes: Attributes.of({'path': AttributeValue.string('/b')}));
       expect(counter.store.activeStreams, 2);
     });
 
@@ -45,9 +47,12 @@ void main() {
 
     test('cardinality limit drops overflow', () {
       final counter = LongCounter(2);
-      counter.add(1, attributes: Attributes.of({'a': AttributeValue.string('1')}));
-      counter.add(2, attributes: Attributes.of({'b': AttributeValue.string('2')}));
-      counter.add(3, attributes: Attributes.of({'c': AttributeValue.string('3')}));
+      counter.add(1,
+          attributes: Attributes.of({'a': AttributeValue.string('1')}));
+      counter.add(2,
+          attributes: Attributes.of({'b': AttributeValue.string('2')}));
+      counter.add(3,
+          attributes: Attributes.of({'c': AttributeValue.string('3')}));
       expect(counter.store.activeStreams, 2);
       expect(counter.store.overflowCount, 1);
     });
@@ -94,7 +99,7 @@ void main() {
 
   group('SDKMeter', () {
     test('creates instruments of correct types', () {
-      final meter = SDKMeter(scope: InstrumentationScope(name: 'test'));
+      final meter = SDKMeter();
       expect(meter.createCounter('c'), isA<LongCounter>());
       expect(meter.createUpDownCounter('u'), isA<LongUpDownCounter>());
       expect(meter.createDoubleHistogram('h'), isA<DoubleHistogramImpl>());
@@ -140,20 +145,26 @@ void main() {
       reader.registerCounter(counter);
       counter.add(10);
       await reader.forceFlush();
-      expect((exporter.exported.first as MetricCollection).counters.first.value, 10);
+      expect((exporter.exported.first as MetricCollection).counters.first.value,
+          10);
       counter.add(15);
       await reader.forceFlush();
       expect(exporter.exported.length, 2);
-      expect((exporter.exported[1] as MetricCollection).counters.first.value, 15);
+      expect(
+          (exporter.exported[1] as MetricCollection).counters.first.value, 15);
       await reader.shutdown();
     });
   });
 
   group('ConsoleMetricExporter', () {
     test('export returns success', () async {
-      const exporter = ConsoleMetricExporter(pretty: false);
+      const exporter = ConsoleMetricExporter();
       final result = await exporter.export([
-        MetricCollection(counters: [], gauges: [], histograms: [], timestamp: DateTime.now()),
+        MetricCollection(
+            counters: [],
+            gauges: [],
+            histograms: [],
+            timestamp: DateTime.now()),
       ]);
       expect(result.isSuccess, isTrue);
     });

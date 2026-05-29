@@ -1,15 +1,16 @@
 name: purple_otel_sdk
-description: OpenTelemetry SDK for Dart — concrete implementations of the PurpleOTel API.
-version: 0.1.0
-repository: https://github.com/your-org/purple_otel
-license: Apache-2.0
+description: OpenTelemetry SDK for Dart — traces, logs, metrics, OTLP export, W3C propagation. Manual protobuf encoder, zero code generation.
+version: 0.1.4
+repository: https://github.com/purplesoftsrl/purple_otel_sdk
+homepage: https://github.com/purplesoftsrl/purple_otel_sdk
+topics: [opentelemetry, observability, tracing, logging, metrics]
+license: AGPL-3.0
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
-  purple_otel_api:
-    path: ../purple_otel_api
+  purple_otel_api: ^0.1.0
   http: ^1.5.0
   collection: ^1.18.0
 
