@@ -1,5 +1,10 @@
 import 'package:purple_otel_api/purple_otel_api.dart';
 
+/// The flagship SDK implementation of [LogRecord].
+///
+/// An immutable snapshot of a log event with optional trace context linking.
+/// Use [SDKLogRecord.fromLogRecord] to copy and optionally enrich an existing
+/// [LogRecord] instance.
 final class SDKLogRecord implements LogRecord {
   @override
   final DateTime timestamp;
@@ -22,6 +27,12 @@ final class SDKLogRecord implements LogRecord {
   @override
   final int droppedAttributesCount;
 
+  /// Creates an [SDKLogRecord].
+  ///
+  /// [severityText] is an optional human-readable severity label.
+  /// [traceId], [spanId], and [traceFlags] link this record to a trace,
+  /// enabling correlation with spans.
+  /// [droppedAttributesCount] defaults to `0`.
   const SDKLogRecord({
     required this.timestamp,
     required this.observedTimestamp,
@@ -35,6 +46,7 @@ final class SDKLogRecord implements LogRecord {
     this.droppedAttributesCount = 0,
   });
 
+  /// Creates an [SDKLogRecord] by copying all fields from an existing [record].
   factory SDKLogRecord.fromLogRecord(LogRecord record) => SDKLogRecord(
         timestamp: record.timestamp,
         observedTimestamp: record.observedTimestamp,

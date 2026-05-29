@@ -22,11 +22,13 @@ void main() {
 
     test('nested zones inherit parent context', () {
       final storage = ZoneContextStorage();
-      final outerCtx = Context.root.withValue(ContextKey<String>('outer'), 'outer-value');
+      final outerCtx =
+          Context.root.withValue(ContextKey<String>('outer'), 'outer-value');
 
       ZoneContextStorage.runWithContext(outerCtx, () {
         runZoned(() {
-          expect(storage.current.get(ContextKey<String>('outer')), 'outer-value');
+          expect(
+              storage.current.get(ContextKey<String>('outer')), 'outer-value');
         });
       });
     });
@@ -100,6 +102,7 @@ final class _CaptureSpanExporter implements SpanExporter {
     exported.addAll(items);
     return ExportResult.success();
   }
+
   @override
   Future<void> shutdown() async {}
   @override
@@ -113,6 +116,7 @@ final class _CaptureLogExporter implements LogRecordExporter {
     exported.addAll(items);
     return ExportResult.success();
   }
+
   @override
   Future<void> shutdown() async {}
   @override

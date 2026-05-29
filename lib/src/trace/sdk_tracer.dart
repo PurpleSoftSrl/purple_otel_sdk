@@ -6,6 +6,12 @@ import '../context/zone_context_storage.dart';
 import 'sdk_span.dart';
 import 'sdk_span_context.dart';
 
+/// The flagship SDK implementation of [Tracer].
+///
+/// Creates spans with the configured sampler, ID generator, span limits, and
+/// context storage. Parent context is resolved from the active [ContextStorage]
+/// when not explicitly provided. Sampling decisions are applied before span
+/// creation to avoid unnecessary overhead for dropped traces.
 final class SDKTracer implements Tracer {
   final InstrumentationScope _scope;
   final Resource _resource;
@@ -15,6 +21,15 @@ final class SDKTracer implements Tracer {
   final SpanLimits _spanLimits;
   final ContextStorage _contextStorage;
 
+  /// Creates an [SDKTracer].
+  ///
+  /// [scope] identifies the instrumentation library that owns this tracer.
+  /// [resource] is the entity producing telemetry.
+  /// [processors] receive span start and end events.
+  /// [sampler] determines whether spans are recorded.
+  /// [idGenerator] produces [TraceId] and [SpanId] values.
+  /// [spanLimits] constrains attribute, event, and link counts.
+  /// [contextStorage] provides implicit parent context; defaults to [ZoneContextStorage].
   SDKTracer({
     required InstrumentationScope scope,
     required Resource resource,
@@ -31,6 +46,18 @@ final class SDKTracer implements Tracer {
         _spanLimits = spanLimits ?? const SpanLimits(),
         _contextStorage = contextStorage ?? ZoneContextStorage();
 
+  /// Starts a new span.
+  ///
+  /// If [parentContext] is null, the active context from [ContextStorage] is used.
+  /// When the parent span context is valid, the trace ID and trace flags are
+  /// inherited. Otherwise a new trace ID is generated.
+  ///
+  /// The sampler is consulted before allocating an [SDKSpan]. If the sampling
+  /// decision is [SamplingDecision.drop], a [NoopSpan] is returned instead.
+  ///
+  /// [kind] defaults to [SpanKind.internal].
+  /// [attributes] and [links] are applied to the span before it is returned.
+  /// [startTime] defaults to the current time.
   @override
   Span startSpan(
     String name, {
@@ -52,9 +79,10 @@ final class SDKTracer implements Tracer {
 
     final spanId = _idGenerator.generateSpanId();
 
-    final traceFlags = parentSpanContext != null && parentSpanContext.traceFlags.isSampled
-        ? TraceFlags.sampled
-        : TraceFlags.none;
+    final traceFlags =
+        parentSpanContext != null && parentSpanContext.traceFlags.isSampled
+            ? TraceFlags.sampled
+            : TraceFlags.none;
 
     final samplingResult = _sampler.shouldSample(
       parentContext: parentCtx,
@@ -65,7 +93,8 @@ final class SDKTracer implements Tracer {
       links: links ?? [],
     );
 
-    final isSampled = samplingResult.decision == SamplingDecision.recordAndSample;
+    final isSampled =
+        samplingResult.decision == SamplingDecision.recordAndSample;
     final finalFlags = isSampled ? TraceFlags.sampled : traceFlags;
 
     final spanContext = SDKSpanContext(

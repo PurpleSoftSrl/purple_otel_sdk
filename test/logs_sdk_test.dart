@@ -138,12 +138,14 @@ void main() {
       final exporter = _CaptureExporter();
       final processor = SimpleLogRecordProcessor(exporter);
 
-      processor.onEmit(Context.root, LogRecord(
-        timestamp: DateTime.now(),
-        observedTimestamp: DateTime.now(),
-        severityNumber: Severity.error,
-        body: AttributeValue.string('error!'),
-      ));
+      processor.onEmit(
+          Context.root,
+          LogRecord(
+            timestamp: DateTime.now(),
+            observedTimestamp: DateTime.now(),
+            severityNumber: Severity.error,
+            body: AttributeValue.string('error!'),
+          ));
 
       expect(exporter.exported.length, 1);
     });
@@ -161,16 +163,24 @@ void main() {
         ),
       );
 
-      processor.onEmit(Context.root, LogRecord(
-        timestamp: DateTime.now(), observedTimestamp: DateTime.now(),
-        severityNumber: Severity.info, body: AttributeValue.string('msg1'),
-      ));
+      processor.onEmit(
+          Context.root,
+          LogRecord(
+            timestamp: DateTime.now(),
+            observedTimestamp: DateTime.now(),
+            severityNumber: Severity.info,
+            body: AttributeValue.string('msg1'),
+          ));
       expect(exporter.exported.length, 0);
 
-      processor.onEmit(Context.root, LogRecord(
-        timestamp: DateTime.now(), observedTimestamp: DateTime.now(),
-        severityNumber: Severity.info, body: AttributeValue.string('msg2'),
-      ));
+      processor.onEmit(
+          Context.root,
+          LogRecord(
+            timestamp: DateTime.now(),
+            observedTimestamp: DateTime.now(),
+            severityNumber: Severity.info,
+            body: AttributeValue.string('msg2'),
+          ));
       expect(exporter.exported.length, 2);
 
       await processor.shutdown();
@@ -180,22 +190,36 @@ void main() {
       final exporter = _CaptureExporter();
       final processor = BatchLogRecordProcessor(
         exporter,
-        config: const BatchConfig(maxQueueSize: 2, maxExportBatchSize: 10,
+        config: const BatchConfig(
+            maxQueueSize: 2,
+            maxExportBatchSize: 10,
             scheduleDelay: Duration(seconds: 60)),
       );
 
-      processor.onEmit(Context.root, LogRecord(
-        timestamp: DateTime.now(), observedTimestamp: DateTime.now(),
-        severityNumber: Severity.info, body: AttributeValue.string('msg1'),
-      ));
-      processor.onEmit(Context.root, LogRecord(
-        timestamp: DateTime.now(), observedTimestamp: DateTime.now(),
-        severityNumber: Severity.info, body: AttributeValue.string('msg2'),
-      ));
-      processor.onEmit(Context.root, LogRecord(
-        timestamp: DateTime.now(), observedTimestamp: DateTime.now(),
-        severityNumber: Severity.info, body: AttributeValue.string('msg3'),
-      ));
+      processor.onEmit(
+          Context.root,
+          LogRecord(
+            timestamp: DateTime.now(),
+            observedTimestamp: DateTime.now(),
+            severityNumber: Severity.info,
+            body: AttributeValue.string('msg1'),
+          ));
+      processor.onEmit(
+          Context.root,
+          LogRecord(
+            timestamp: DateTime.now(),
+            observedTimestamp: DateTime.now(),
+            severityNumber: Severity.info,
+            body: AttributeValue.string('msg2'),
+          ));
+      processor.onEmit(
+          Context.root,
+          LogRecord(
+            timestamp: DateTime.now(),
+            observedTimestamp: DateTime.now(),
+            severityNumber: Severity.info,
+            body: AttributeValue.string('msg3'),
+          ));
 
       expect(processor.droppedCount, 1);
       await processor.shutdown();
@@ -205,14 +229,20 @@ void main() {
       final exporter = _CaptureExporter();
       final processor = BatchLogRecordProcessor(
         exporter,
-        config: const BatchConfig(maxExportBatchSize: 10, maxQueueSize: 100,
+        config: const BatchConfig(
+            maxExportBatchSize: 10,
+            maxQueueSize: 100,
             scheduleDelay: Duration(seconds: 60)),
       );
 
-      processor.onEmit(Context.root, LogRecord(
-        timestamp: DateTime.now(), observedTimestamp: DateTime.now(),
-        severityNumber: Severity.info, body: AttributeValue.string('msg1'),
-      ));
+      processor.onEmit(
+          Context.root,
+          LogRecord(
+            timestamp: DateTime.now(),
+            observedTimestamp: DateTime.now(),
+            severityNumber: Severity.info,
+            body: AttributeValue.string('msg1'),
+          ));
 
       await processor.shutdown();
       expect(exporter.exported.length, 1);
@@ -224,8 +254,10 @@ void main() {
       const exporter = ConsoleLogRecordExporter(pretty: false);
       final result = await exporter.export([
         LogRecord(
-          timestamp: DateTime.now(), observedTimestamp: DateTime.now(),
-          severityNumber: Severity.info, body: AttributeValue.string('test'),
+          timestamp: DateTime.now(),
+          observedTimestamp: DateTime.now(),
+          severityNumber: Severity.info,
+          body: AttributeValue.string('test'),
         ),
       ]);
       expect(result.isSuccess, isTrue);

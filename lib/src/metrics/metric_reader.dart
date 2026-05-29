@@ -5,11 +5,23 @@ import 'package:purple_otel_api/purple_otel_api.dart';
 import 'instruments.dart';
 import 'metric_data.dart';
 
+/// The aggregation temporality for metric exports.
+///
+/// [delta] reports only values that changed since the last collection.
+/// [cumulative] reports values from the start of the process lifetime.
 enum Temporality { delta, cumulative }
 
+/// A [MetricReader] that periodically collects metrics from registered
+/// instruments and exports them.
+///
+/// Instruments must be explicitly registered via the `register*` methods. On each
+/// interval tick, the reader collects accumulated values from all registered
+/// instruments, resets delta aggregators if [temporality] is [Temporality.delta],
+/// and exports the resulting [MetricCollection].
+///
+/// Default configuration: 60-second collection interval, [Temporality.delta].
 final class PeriodicExportingMetricReader implements MetricReader {
   final MetricExporter _exporter;
-  final Duration _interval;
   final Temporality _temporality;
   Timer? _timer;
   bool _shutdown = false;
@@ -21,22 +33,43 @@ final class PeriodicExportingMetricReader implements MetricReader {
   final List<LongHistogramImpl> _longHistograms = [];
   final List<DoubleHistogramImpl> _doubleHistograms = [];
 
+  /// Creates a [PeriodicExportingMetricReader].
+  ///
+  /// [exporter] is the target backend for collected metrics.
+  /// [interval] is the period between collection cycles; defaults to 60 seconds.
+  /// [temporality] controls whether delta or cumulative values are exported;
+  /// defaults to [Temporality.delta].
   PeriodicExportingMetricReader({
     required MetricExporter exporter,
     Duration interval = const Duration(seconds: 60),
     Temporality temporality = Temporality.delta,
   })  : _exporter = exporter,
-        _interval = interval,
         _temporality = temporality {
     _timer = Timer.periodic(interval, (_) => _collectAndExport());
   }
 
+  /// Registers a [LongCounter] for periodic collection.
   void registerCounter(LongCounter counter) => _counters.add(counter);
-  void registerDoubleCounter(DoubleCounter counter) => _doubleCounters.add(counter);
-  void registerUpDownCounter(LongUpDownCounter counter) => _upDownCounters.add(counter);
-  void registerDoubleUpDownCounter(DoubleUpDownCounter counter) => _doubleUpDownCounters.add(counter);
-  void registerLongHistogram(LongHistogramImpl histogram) => _longHistograms.add(histogram);
-  void registerDoubleHistogram(DoubleHistogramImpl histogram) => _doubleHistograms.add(histogram);
+
+  /// Registers a [DoubleCounter] for periodic collection.
+  void registerDoubleCounter(DoubleCounter counter) =>
+      _doubleCounters.add(counter);
+
+  /// Registers a [LongUpDownCounter] for periodic collection.
+  void registerUpDownCounter(LongUpDownCounter counter) =>
+      _upDownCounters.add(counter);
+
+  /// Registers a [DoubleUpDownCounter] for periodic collection.
+  void registerDoubleUpDownCounter(DoubleUpDownCounter counter) =>
+      _doubleUpDownCounters.add(counter);
+
+  /// Registers a [LongHistogramImpl] for periodic collection.
+  void registerLongHistogram(LongHistogramImpl histogram) =>
+      _longHistograms.add(histogram);
+
+  /// Registers a [DoubleHistogramImpl] for periodic collection.
+  void registerDoubleHistogram(DoubleHistogramImpl histogram) =>
+      _doubleHistograms.add(histogram);
 
   void _collectAndExport() {
     if (_shutdown) return;
@@ -46,7 +79,8 @@ final class PeriodicExportingMetricReader implements MetricReader {
 
     for (final c in _counters) {
       final attrsBefore = c.store.cardinality.snapshotAttributes();
-      final snapshot = c.store.collectAndReset(_temporality == Temporality.delta);
+      final snapshot =
+          c.store.collectAndReset(_temporality == Temporality.delta);
       for (final entry in snapshot.entries) {
         final attrs = attrsBefore[entry.key];
         if (attrs != null) {
@@ -60,7 +94,8 @@ final class PeriodicExportingMetricReader implements MetricReader {
     }
 
     for (final c in _doubleCounters) {
-      final snapshot = c.store.collectAndReset(_temporality == Temporality.delta);
+      final snapshot =
+          c.store.collectAndReset(_temporality == Temporality.delta);
       for (final entry in snapshot.entries) {
         final attrs = c.store.cardinality.getAttributes(entry.key);
         if (attrs != null) {
@@ -74,7 +109,8 @@ final class PeriodicExportingMetricReader implements MetricReader {
     }
 
     for (final h in _doubleHistograms) {
-      final snapshot = h.store.collectAndReset(_temporality == Temporality.delta);
+      final snapshot =
+          h.store.collectAndReset(_temporality == Temporality.delta);
       for (final entry in snapshot.entries) {
         final attrs = h.store.cardinality.getAttributes(entry.key);
         if (attrs != null) {

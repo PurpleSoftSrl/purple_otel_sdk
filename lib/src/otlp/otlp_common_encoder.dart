@@ -2,7 +2,8 @@ import 'package:purple_otel_api/purple_otel_api.dart';
 import 'protobuf_writer.dart';
 
 abstract final class OtlpCommonEncoder {
-  static void encodeAnyValue(ProtobufWriter w, int field, AttributeValue value) {
+  static void encodeAnyValue(
+      ProtobufWriter w, int field, AttributeValue value) {
     final inner = ProtobufWriter();
     value.map(
       string: (v) => inner.writeString(1, v),
@@ -21,7 +22,8 @@ abstract final class OtlpCommonEncoder {
     w.writeMessage(field, inner);
   }
 
-  static void encodeKeyValue(ProtobufWriter w, int field, String key, AttributeValue value) {
+  static void encodeKeyValue(
+      ProtobufWriter w, int field, String key, AttributeValue value) {
     final inner = ProtobufWriter();
     inner.writeString(1, key);
     encodeAnyValue(inner, 2, value);
@@ -37,13 +39,11 @@ abstract final class OtlpCommonEncoder {
     w.writeMessage(field, inner);
   }
 
-  static void encodeInstrumentationScope(ProtobufWriter w, int field, InstrumentationScope scope) {
+  static void encodeInstrumentationScope(
+      ProtobufWriter w, int field, InstrumentationScope scope) {
     final inner = ProtobufWriter();
     inner.writeString(1, scope.name);
     if (scope.version != null) inner.writeString(2, scope.version!);
     w.writeMessage(field, inner);
   }
-
-  static int _nanoTime(DateTime dt) =>
-      dt.microsecondsSinceEpoch * 1000;
 }

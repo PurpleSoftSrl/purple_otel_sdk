@@ -1,8 +1,16 @@
 import 'package:purple_otel_api/purple_otel_api.dart';
 
+/// A [LogRecordExporter] that writes log records to `stdout` for debugging.
+///
+/// Does not connect to any backend; output is printed via `print()`. Supports
+/// two formats: human-readable ("pretty") and JSON-like structured output.
 final class ConsoleLogRecordExporter implements LogRecordExporter {
   final bool _pretty;
 
+  /// Creates a [ConsoleLogRecordExporter].
+  ///
+  /// [pretty] controls whether records are printed in a human-readable format
+  /// (`true`, default) or as JSON-like maps (`false`).
   const ConsoleLogRecordExporter({bool pretty = true}) : _pretty = pretty;
 
   @override
