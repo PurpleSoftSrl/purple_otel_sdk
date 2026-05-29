@@ -220,9 +220,10 @@ packages:
   purple_otel_api:
     dependency: "direct main"
     description:
-      path: "../purple_otel_api"
-      relative: true
-    source: path
+      name: purple_otel_api
+      sha256: "39fed98d1d1ad04c6efd558e62465e7d2abb8ea0f387b45cfba7afa22a43664c"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   shelf:
     dependency: transitive

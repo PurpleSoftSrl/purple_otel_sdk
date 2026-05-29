@@ -2,10 +2,22 @@ import 'dart:typed_data';
 
 import 'package:purple_otel_api/purple_otel_api.dart';
 
+/// Implements the W3C Trace Context propagation format.
+///
+/// Injects and extracts `traceparent` and `tracestate` headers per the
+/// [W3C Trace Context Level 2](https://www.w3.org/TR/trace-context-2/) specification.
+///
+/// The `traceparent` header uses the format `00-{traceId}-{spanId}-{traceFlags}`.
+/// Unrecognized version prefixes cause extraction to silently fall back to the
+/// supplied [Context].
 final class W3CTraceContextPropagator {
   static const String _traceParentHeader = 'traceparent';
   static const String _traceStateHeader = 'tracestate';
 
+  /// Injects the span context from [context] into [carrier] as HTTP headers.
+  ///
+  /// Sets the `traceparent` header and, if present, the `tracestate` header.
+  /// If the span context is invalid, no headers are written.
   static void inject(Context context, Map<String, String> carrier) {
     final span = context.span;
     if (span == null || !span.spanContext.isValid) return;
@@ -23,6 +35,10 @@ final class W3CTraceContextPropagator {
     }
   }
 
+  /// Extracts a span context from [carrier] headers and returns a [Context].
+  ///
+  /// If the `traceparent` header is missing or malformed, the original [context]
+  /// is returned unchanged.
   static Context extract(Context context, Map<String, String> carrier) {
     final traceParent = carrier[_traceParentHeader];
     if (traceParent == null) return context;

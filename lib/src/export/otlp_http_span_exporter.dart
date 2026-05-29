@@ -3,11 +3,22 @@ import 'package:purple_otel_api/purple_otel_api.dart';
 import '../otlp/otlp_trace_encoder.dart';
 import 'otlp_http_client.dart';
 
+/// A [SpanExporter] that sends spans to an OTLP collector via HTTP/protobuf.
+///
+/// Encodes spans using [OtlpTraceEncoder] and POSTs to `{endpoint}/v1/traces`.
+/// Supports retryable and non-retryable error classification.
 final class OtlpHttpSpanExporter implements SpanExporter {
   final OtlpHttpClient _client;
   final Resource? _resource;
   final InstrumentationScope? _scope;
 
+  /// Creates an [OtlpHttpSpanExporter].
+  ///
+  /// [endpoint] is the base URL of the OTLP collector.
+  /// [headers] are optional additional HTTP headers.
+  /// [resource] is attached to exported payloads as resource attributes.
+  /// [scope] identifies the instrumentation source.
+  /// [timeoutMs] is the per-request timeout in milliseconds; defaults to `10000`.
   OtlpHttpSpanExporter({
     required Uri endpoint,
     Map<String, String>? headers,

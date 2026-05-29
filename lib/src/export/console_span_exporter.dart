@@ -2,9 +2,17 @@ import 'package:purple_otel_api/purple_otel_api.dart';
 
 import '../trace/sdk_span.dart';
 
+/// A [SpanExporter] that writes span data to `stdout` for debugging.
+///
+/// Does not connect to any backend; output is printed via `print()`. Supports
+/// two formats: human-readable ("pretty") and JSON-like structured output.
 final class ConsoleSpanExporter implements SpanExporter {
   final bool _pretty;
 
+  /// Creates a [ConsoleSpanExporter].
+  ///
+  /// [pretty] controls whether spans are printed in a human-readable format
+  /// (`true`, default) or as JSON-like maps (`false`).
   const ConsoleSpanExporter({bool pretty = true}) : _pretty = pretty;
 
   @override

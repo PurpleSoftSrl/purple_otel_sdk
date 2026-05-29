@@ -2,6 +2,12 @@ import 'package:purple_otel_api/purple_otel_api.dart';
 
 import 'sdk_span_context.dart';
 
+/// The flagship SDK implementation of [Span].
+///
+/// Collects all span data in memory: attributes, events, links, and status.
+/// When [end] is called, the span is marked as ended and forwarded to all
+/// configured [SpanProcessor] instances for export. Limits from [SpanLimits]
+/// are enforced on attribute count, event count, and link count.
 final class SDKSpan implements Span {
   final SDKSpanContext _spanContext;
   final InstrumentationScope _scope;
@@ -19,6 +25,16 @@ final class SDKSpan implements Span {
   SpanStatus _status = SpanStatus.unset;
   bool _ended = false;
 
+  /// Creates an [SDKSpan].
+  ///
+  /// [spanContext] is the immutable span identity (trace ID, span ID, flags).
+  /// [scope] identifies the instrumentation library that created this span.
+  /// [resource] is the entity producing telemetry.
+  /// [kind] indicates the span's role (client, server, internal, etc.).
+  /// [name] is the human-readable span name.
+  /// [processors] receive the span on [end].
+  /// [limits] constrain attribute, event, and link counts.
+  /// [startTime] defaults to the current time.
   SDKSpan({
     required SDKSpanContext spanContext,
     required InstrumentationScope scope,
@@ -37,11 +53,22 @@ final class SDKSpan implements Span {
         _processors = processors,
         _limits = limits;
 
+  /// The instrumentation scope that created this span.
   InstrumentationScope get scope => _scope;
+
+  /// The resource describing the entity that produced this span.
   Resource get resource => _resource;
+
+  /// The role or type of this span (client, server, internal, etc.).
   SpanKind get kind => _kind;
+
+  /// The time at which this span was started.
   DateTime get startTime => _startTime;
+
+  /// The time at which this span was ended, or `null` if still recording.
   DateTime? get endTime => _endTime;
+
+  /// The current [SpanStatus] of this span.
   SpanStatus get status => _status;
 
   @override
@@ -52,10 +79,16 @@ final class SDKSpan implements Span {
 
   @override
   void setStatus(SpanStatus status) {
-    if (_ended) return;
+    if (_ended) {
+      return;
+    }
     _status = status;
   }
 
+  /// Sets a single attribute on this span.
+  ///
+  /// If the span has reached [SpanLimits.maxAttributes], the attribute
+  /// is silently dropped. No-op after [end] is called.
   @override
   void setAttribute(String key, AttributeValue value) {
     if (_ended) return;
@@ -65,6 +98,10 @@ final class SDKSpan implements Span {
     _attributes![key] = value;
   }
 
+  /// Sets multiple attributes on this span.
+  ///
+  /// Attributes beyond [SpanLimits.maxAttributes] are silently dropped.
+  /// Existing attributes with the same key are overwritten.
   @override
   void setAttributes(Attributes attributes) {
     _attributes ??= {};
@@ -74,6 +111,10 @@ final class SDKSpan implements Span {
     }
   }
 
+  /// Adds a timestamped event to this span.
+  ///
+  /// If the span has reached [SpanLimits.maxEvents], the event is silently
+  /// dropped. [timestamp] defaults to the current time.
   @override
   void addEvent(String name, {DateTime? timestamp, Attributes? attributes}) {
     if (_events != null && _events!.length >= _limits.maxEvents) return;
@@ -84,6 +125,9 @@ final class SDKSpan implements Span {
         attributes: attributes));
   }
 
+  /// Adds a link to another span context.
+  ///
+  /// If the span has reached [SpanLimits.maxLinks], the link is silently dropped.
   @override
   void addLink(SpanContext spanContext, {Attributes? attributes}) {
     if (_links != null && _links!.length >= _limits.maxLinks) return;
@@ -91,6 +135,11 @@ final class SDKSpan implements Span {
     _links!.add(SpanLink(spanContext: spanContext, attributes: attributes));
   }
 
+  /// Records an exception as a span event.
+  ///
+  /// The exception type and message are stored as attributes on an event named
+  /// `"exception"`. [stackTrace] and additional [attributes] are included when
+  /// provided. No-op after [end] is called.
   @override
   void recordException(Object exception,
       {StackTrace? stackTrace, Attributes? attributes}) {
@@ -112,12 +161,19 @@ final class SDKSpan implements Span {
         timestamp: DateTime.now(), attributes: Attributes.of(attrs));
   }
 
+  /// Updates the human-readable name of this span.
+  ///
+  /// No-op after [end] is called.
   @override
   void updateName(String name) {
     if (_ended) return;
     _name = name;
   }
 
+  /// Ends this span and forwards it to all registered [SpanProcessor] instances.
+  ///
+  /// After calling [end], all mutation methods become no-ops. [endTime] defaults
+  /// to the current time.
   @override
   void end([DateTime? endTime]) {
     if (_ended) return;
@@ -130,10 +186,17 @@ final class SDKSpan implements Span {
     }
   }
 
+  /// The current span name.
   String get name => _name;
+
+  /// An unmodifiable view of the span's attributes.
   Map<String, AttributeValue> get attributes =>
       Map.unmodifiable(_attributes ?? {});
+
+  /// An unmodifiable view of the span's events.
   List<SpanEvent> get events => List.unmodifiable(_events ?? []);
+
+  /// An unmodifiable view of the span's links.
   List<SpanLink> get links => List.unmodifiable(_links ?? []);
 
   static String _safeStr(Object obj) {

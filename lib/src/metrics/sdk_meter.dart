@@ -1,7 +1,13 @@
 import 'package:purple_otel_api/purple_otel_api.dart';
 import 'instruments.dart';
 
+/// The flagship SDK implementation of [Meter].
+///
+/// Factory for all synchronous and asynchronous metric instruments. Each
+/// instrument is created with a default maximum cardinality of 2000 unique
+/// attribute combinations.
 final class SDKMeter implements Meter {
+  /// Creates an [SDKMeter].
   SDKMeter();
 
   @override
@@ -13,6 +19,10 @@ final class SDKMeter implements Meter {
           {String? unit, String? description}) =>
       LongUpDownCounter(2000);
 
+  /// Creates a [DoubleHistogramImpl] with the given bucket boundaries.
+  ///
+  /// If [explicitBucketBoundaries] is not provided, a default set of latency-oriented
+  /// boundaries is used: `[0, 5, 10, 25, 50, 75, 100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000]`.
   @override
   DoubleHistogramImpl createDoubleHistogram(String name,
       {String? unit,
@@ -40,6 +50,10 @@ final class SDKMeter implements Meter {
     );
   }
 
+  /// Creates a [LongHistogramImpl] with the given bucket boundaries.
+  ///
+  /// If [explicitBucketBoundaries] is not provided, a default set of latency-oriented
+  /// boundaries is used (same as [createDoubleHistogram]).
   @override
   LongHistogramImpl createLongHistogram(String name,
       {String? unit,

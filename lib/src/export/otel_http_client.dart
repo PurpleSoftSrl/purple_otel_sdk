@@ -9,11 +9,23 @@ import 'package:purple_otel_sdk/purple_otel_sdk.dart'
         W3CTraceContextPropagator,
         SpanStatus;
 
+/// An `http.BaseClient` wrapper that automatically instruments outgoing HTTP
+/// requests with tracing spans.
+///
+/// Each request creates a span named `"{METHOD} {host}{path}"` with attributes
+/// for the HTTP method, URL, and host. W3C trace context headers are injected
+/// via [W3CTraceContextPropagator]. Response status codes set the span status:
+/// 5xx and 4xx result in an error status; otherwise [SpanStatus.ok].
 final class OtelHttpClient extends http.BaseClient {
   final http.Client _inner;
   final Tracer _tracer;
   final SpanKind _kind;
 
+  /// Creates an [OtelHttpClient].
+  ///
+  /// [inner] is the underlying HTTP client that performs the actual request.
+  /// [tracer] creates spans for each HTTP request.
+  /// [kind] indicates the span role; defaults to [SpanKind.client].
   OtelHttpClient({
     required http.Client inner,
     required Tracer tracer,
