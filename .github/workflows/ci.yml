@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - purple_otel_api
+          - purple_otel_sdk
+          - purple_otel_dio
+          - purple_logger
+          - purple_logger_otel
+          - purple_logger_otel_sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.5'
+      - name: Bootstrap
+        run: dart pub get
+        working-directory: packages/shared/${{ matrix.package }}
+      - name: Analyze
+        run: dart analyze
+        working-directory: packages/shared/${{ matrix.package }}
+      - name: Test
+        run: dart test
+        working-directory: packages/shared/${{ matrix.package }}
