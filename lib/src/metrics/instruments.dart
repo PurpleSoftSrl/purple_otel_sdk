@@ -6,7 +6,8 @@ final class LongCounter implements Counter<int> {
   final StreamStore<SumAggregator> _store;
 
   LongCounter(int maxCardinality)
-      : _store = StreamStore(CardinalityController(maxCombinations: maxCardinality),
+      : _store = StreamStore(
+            CardinalityController(maxCombinations: maxCardinality),
             () => SumAggregator(monotonic: true));
 
   @override
@@ -22,7 +23,8 @@ final class DoubleCounter implements Counter<double> {
   final StreamStore<DoubleSumAggregator> _store;
 
   DoubleCounter(int maxCardinality)
-      : _store = StreamStore(CardinalityController(maxCombinations: maxCardinality),
+      : _store = StreamStore(
+            CardinalityController(maxCombinations: maxCardinality),
             () => DoubleSumAggregator(monotonic: true));
 
   @override
@@ -38,7 +40,8 @@ final class LongUpDownCounter implements UpDownCounter<int> {
   final StreamStore<SumAggregator> _store;
 
   LongUpDownCounter(int maxCardinality)
-      : _store = StreamStore(CardinalityController(maxCombinations: maxCardinality),
+      : _store = StreamStore(
+            CardinalityController(maxCombinations: maxCardinality),
             () => SumAggregator(monotonic: false));
 
   @override
@@ -54,7 +57,8 @@ final class DoubleUpDownCounter implements UpDownCounter<double> {
   final StreamStore<DoubleSumAggregator> _store;
 
   DoubleUpDownCounter(int maxCardinality)
-      : _store = StreamStore(CardinalityController(maxCombinations: maxCardinality),
+      : _store = StreamStore(
+            CardinalityController(maxCombinations: maxCardinality),
             () => DoubleSumAggregator(monotonic: false));
 
   @override
@@ -74,7 +78,8 @@ final class LongHistogramImpl implements LongHistogram {
     required List<double> boundaries,
     int maxCardinality = 2000,
   })  : _boundaries = boundaries,
-        _store = StreamStore(CardinalityController(maxCombinations: maxCardinality),
+        _store = StreamStore(
+            CardinalityController(maxCombinations: maxCardinality),
             () => HistogramAggregator(boundaries));
 
   @override
@@ -95,7 +100,8 @@ final class DoubleHistogramImpl implements DoubleHistogram {
     required List<double> boundaries,
     int maxCardinality = 2000,
   })  : _boundaries = boundaries,
-        _store = StreamStore(CardinalityController(maxCombinations: maxCardinality),
+        _store = StreamStore(
+            CardinalityController(maxCombinations: maxCardinality),
             () => DoubleHistogramAggregator(boundaries));
 
   @override

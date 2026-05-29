@@ -18,7 +18,7 @@ final class SDKMeterProvider implements MeterProvider {
     required List<MetricReader> readers,
     MetricCardinalityLimits? limits,
     List<View>? views,
-  })  : _readers = List.unmodifiable(readers);
+  }) : _readers = List.unmodifiable(readers);
 
   @override
   SDKMeter get(String name, {String? version, String? schemaUrl}) {

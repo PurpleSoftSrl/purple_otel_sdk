@@ -14,7 +14,8 @@ final class OtlpHttpLogRecordExporter implements LogRecordExporter {
     Resource? resource,
     InstrumentationScope? scope,
     int timeoutMs = 10000,
-  })  : _client = OtlpHttpClient(endpoint: endpoint, headers: headers, timeoutMs: timeoutMs),
+  })  : _client = OtlpHttpClient(
+            endpoint: endpoint, headers: headers, timeoutMs: timeoutMs),
         _resource = resource,
         _scope = scope;
 
@@ -22,7 +23,8 @@ final class OtlpHttpLogRecordExporter implements LogRecordExporter {
   Future<ExportResult> export(List<LogRecord> items) async {
     if (items.isEmpty) return ExportResult.success();
     try {
-      final body = OtlpLogEncoder.encode(items, resource: _resource, scope: _scope);
+      final body =
+          OtlpLogEncoder.encode(items, resource: _resource, scope: _scope);
       final status = await _client.send('/v1/logs', body);
       if (status == 200 || status == 204) {
         return ExportResult.success();

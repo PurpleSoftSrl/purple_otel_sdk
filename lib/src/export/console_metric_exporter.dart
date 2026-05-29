@@ -12,7 +12,8 @@ final class ConsoleMetricExporter implements MetricExporter {
           print('[METRIC] counter ${counter.attributes} = ${counter.value}');
         }
         for (final hist in item.histograms) {
-          print('[METRIC] histogram ${hist.attributes} count=${hist.count} sum=${hist.sum} buckets=${hist.bucketCounts}');
+          print(
+              '[METRIC] histogram ${hist.attributes} count=${hist.count} sum=${hist.sum} buckets=${hist.bucketCounts}');
         }
       }
     }

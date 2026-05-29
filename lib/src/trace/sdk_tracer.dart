@@ -52,9 +52,10 @@ final class SDKTracer implements Tracer {
 
     final spanId = _idGenerator.generateSpanId();
 
-    final traceFlags = parentSpanContext != null && parentSpanContext.traceFlags.isSampled
-        ? TraceFlags.sampled
-        : TraceFlags.none;
+    final traceFlags =
+        parentSpanContext != null && parentSpanContext.traceFlags.isSampled
+            ? TraceFlags.sampled
+            : TraceFlags.none;
 
     final samplingResult = _sampler.shouldSample(
       parentContext: parentCtx,
@@ -65,7 +66,8 @@ final class SDKTracer implements Tracer {
       links: links ?? [],
     );
 
-    final isSampled = samplingResult.decision == SamplingDecision.recordAndSample;
+    final isSampled =
+        samplingResult.decision == SamplingDecision.recordAndSample;
     final finalFlags = isSampled ? TraceFlags.sampled : traceFlags;
 
     final spanContext = SDKSpanContext(

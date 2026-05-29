@@ -102,7 +102,8 @@ void main() {
       final tracer = provider.get('test');
 
       final span = tracer.startSpan('event-span');
-      span.addEvent('page.loaded', attributes: Attributes.of({'url': AttributeValue.string('/home')}));
+      span.addEvent('page.loaded',
+          attributes: Attributes.of({'url': AttributeValue.string('/home')}));
       span.end();
 
       final sdkSpan = exporter.exported.first as SDKSpan;
@@ -172,7 +173,9 @@ void main() {
       final exporter = _CaptureExporter();
       final processor = BatchSpanProcessor(
         exporter,
-        config: const BatchConfig(maxExportBatchSize: 2, maxQueueSize: 10,
+        config: const BatchConfig(
+            maxExportBatchSize: 2,
+            maxQueueSize: 10,
             scheduleDelay: Duration(seconds: 60)),
       );
       final provider = SDKTracerProvider(
@@ -194,7 +197,9 @@ void main() {
       final exporter = _CaptureExporter();
       final processor = BatchSpanProcessor(
         exporter,
-        config: const BatchConfig(maxQueueSize: 2, maxExportBatchSize: 10,
+        config: const BatchConfig(
+            maxQueueSize: 2,
+            maxExportBatchSize: 10,
             scheduleDelay: Duration(seconds: 60)),
       );
       final provider = SDKTracerProvider(
@@ -231,7 +236,8 @@ void main() {
     });
 
     test('extract reads traceparent header', () {
-      final traceparent = '00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01';
+      final traceparent =
+          '00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01';
       final carrier = {'traceparent': traceparent};
 
       final ctx = W3CTraceContextPropagator.extract(Context.root, carrier);

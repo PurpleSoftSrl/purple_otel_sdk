@@ -5,7 +5,8 @@ import 'protobuf_writer.dart';
 import 'otlp_common_encoder.dart';
 
 abstract final class OtlpLogEncoder {
-  static Uint8List encode(List<LogRecord> records, {Resource? resource, InstrumentationScope? scope}) {
+  static Uint8List encode(List<LogRecord> records,
+      {Resource? resource, InstrumentationScope? scope}) {
     final request = ProtobufWriter();
 
     final resourceLogs = ProtobufWriter();
@@ -55,6 +56,5 @@ abstract final class OtlpLogEncoder {
     return request.toBytes();
   }
 
-  static int _nanoTime(DateTime dt) =>
-      dt.microsecondsSinceEpoch * 1000;
+  static int _nanoTime(DateTime dt) => dt.microsecondsSinceEpoch * 1000;
 }

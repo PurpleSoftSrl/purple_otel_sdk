@@ -27,7 +27,8 @@ final class CardinalityController {
 
   Attributes? getAttributes(int hash) => _streams[hash];
 
-  Map<int, Attributes> snapshotAttributes() => Map<int, Attributes>.from(_streams);
+  Map<int, Attributes> snapshotAttributes() =>
+      Map<int, Attributes>.from(_streams);
 
   static int _hashAttributes(Attributes attrs) {
     var h = 0;
@@ -81,7 +82,8 @@ final class StreamStore<T> {
       } else if (entry.value is HistogramAggregator) {
         result[entry.key] = (entry.value as HistogramAggregator).copy() as T;
       } else if (entry.value is DoubleHistogramAggregator) {
-        result[entry.key] = (entry.value as DoubleHistogramAggregator).copy() as T;
+        result[entry.key] =
+            (entry.value as DoubleHistogramAggregator).copy() as T;
       } else if (entry.value is LastValueAggregator) {
         result[entry.key] = (entry.value as LastValueAggregator).copy() as T;
       }

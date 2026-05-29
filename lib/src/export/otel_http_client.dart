@@ -1,5 +1,13 @@
 import 'package:http/http.dart' as http;
-import 'package:purple_otel_sdk/purple_otel_sdk.dart' show Tracer, SpanKind, spanContextKey, Context, AttributeValue, W3CTraceContextPropagator, SpanStatus;
+import 'package:purple_otel_sdk/purple_otel_sdk.dart'
+    show
+        Tracer,
+        SpanKind,
+        spanContextKey,
+        Context,
+        AttributeValue,
+        W3CTraceContextPropagator,
+        SpanStatus;
 
 final class OtelHttpClient extends http.BaseClient {
   final http.Client _inner;
@@ -22,7 +30,8 @@ final class OtelHttpClient extends http.BaseClient {
     );
 
     span.setAttribute('http.method', AttributeValue.string(request.method));
-    span.setAttribute('http.url', AttributeValue.string(request.url.toString()));
+    span.setAttribute(
+        'http.url', AttributeValue.string(request.url.toString()));
     span.setAttribute('http.host', AttributeValue.string(request.url.host));
 
     final carrier = <String, String>{};
@@ -43,7 +52,8 @@ final class OtelHttpClient extends http.BaseClient {
       rethrow;
     }
 
-    span.setAttribute('http.status_code', AttributeValue.int(response.statusCode));
+    span.setAttribute(
+        'http.status_code', AttributeValue.int(response.statusCode));
 
     if (response.statusCode >= 500) {
       span.setStatus(SpanStatus.error('HTTP ${response.statusCode}'));

@@ -32,7 +32,8 @@ final class ConsoleSpanExporter implements SpanExporter {
     final status = sdkSpan?.status.code.name ?? 'unset';
 
     print('[SPAN] $name kind=$kind status=$status duration=$duration');
-    print('  trace=${ctx.traceId.toShortString()} span=${ctx.spanId.toShortString()}');
+    print(
+        '  trace=${ctx.traceId.toShortString()} span=${ctx.spanId.toShortString()}');
     if (attrs.isNotEmpty) {
       print('  attrs: $attrs');
     }

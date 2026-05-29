@@ -6,7 +6,8 @@ import '../otlp/protobuf_writer.dart';
 import '../otlp/otlp_common_encoder.dart';
 
 abstract final class OtlpMetricEncoder {
-  static Uint8List encode(List<Metric> metrics, {Resource? resource, InstrumentationScope? scope}) {
+  static Uint8List encode(List<Metric> metrics,
+      {Resource? resource, InstrumentationScope? scope}) {
     final request = ProtobufWriter();
     final resourceMetrics = ProtobufWriter();
 

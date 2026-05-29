@@ -6,7 +6,8 @@ import 'protobuf_writer.dart';
 import 'otlp_common_encoder.dart';
 
 abstract final class OtlpTraceEncoder {
-  static Uint8List encode(List<Span> spans, {Resource? resource, InstrumentationScope? scope}) {
+  static Uint8List encode(List<Span> spans,
+      {Resource? resource, InstrumentationScope? scope}) {
     final request = ProtobufWriter();
 
     final resourceSpans = ProtobufWriter();
@@ -43,7 +44,8 @@ abstract final class OtlpTraceEncoder {
         eventMsg.writeString(2, event.name);
         if (event.attributes != null) {
           for (final key in event.attributes!.entries.keys) {
-            OtlpCommonEncoder.encodeKeyValue(eventMsg, 3, key, event.attributes!.entries[key]!);
+            OtlpCommonEncoder.encodeKeyValue(
+                eventMsg, 3, key, event.attributes!.entries[key]!);
           }
         }
         spanMsg.writeMessage(10, eventMsg);
@@ -57,7 +59,8 @@ abstract final class OtlpTraceEncoder {
         linkMsg.writeBytes(2, link.spanContext.spanId.bytes);
         if (link.attributes != null) {
           for (final key in link.attributes!.entries.keys) {
-            OtlpCommonEncoder.encodeKeyValue(linkMsg, 4, key, link.attributes!.entries[key]!);
+            OtlpCommonEncoder.encodeKeyValue(
+                linkMsg, 4, key, link.attributes!.entries[key]!);
           }
         }
         spanMsg.writeMessage(12, linkMsg);
@@ -86,14 +89,18 @@ abstract final class OtlpTraceEncoder {
 
   static int _encodeKind(SpanKind kind) {
     switch (kind) {
-      case SpanKind.internal: return 1;
-      case SpanKind.server: return 2;
-      case SpanKind.client: return 3;
-      case SpanKind.producer: return 4;
-      case SpanKind.consumer: return 5;
+      case SpanKind.internal:
+        return 1;
+      case SpanKind.server:
+        return 2;
+      case SpanKind.client:
+        return 3;
+      case SpanKind.producer:
+        return 4;
+      case SpanKind.consumer:
+        return 5;
     }
   }
 
-  static int _nanoTime(DateTime dt) =>
-      dt.microsecondsSinceEpoch * 1000;
+  static int _nanoTime(DateTime dt) => dt.microsecondsSinceEpoch * 1000;
 }

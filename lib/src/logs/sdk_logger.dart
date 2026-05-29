@@ -26,7 +26,8 @@ final class SDKLogger implements Logger {
     final activeCtx = _contextStorage.current;
     final spanCtx = activeCtx.span?.spanContext;
     final enriched = SDKLogRecord(
-      timestamp: record.timestamp == record.observedTimestamp ? now : record.timestamp,
+      timestamp:
+          record.timestamp == record.observedTimestamp ? now : record.timestamp,
       observedTimestamp: now,
       severityNumber: record.severityNumber,
       severityText: record.severityText,

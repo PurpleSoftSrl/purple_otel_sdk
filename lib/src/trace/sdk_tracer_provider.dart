@@ -28,14 +28,17 @@ final class SDKTracerProvider implements TracerProvider {
   @override
   SDKTracer get(String name, {String? version, String? schemaUrl}) {
     final key = '${name}\x00${version ?? ''}\x00${schemaUrl ?? ''}';
-    return _tracers.putIfAbsent(key, () => SDKTracer(
-      scope: InstrumentationScope(name: name, version: version, schemaUrl: schemaUrl),
-      resource: _resource,
-      processors: _processors,
-      sampler: _sampler,
-      idGenerator: _idGenerator,
-      spanLimits: _spanLimits,
-    ));
+    return _tracers.putIfAbsent(
+        key,
+        () => SDKTracer(
+              scope: InstrumentationScope(
+                  name: name, version: version, schemaUrl: schemaUrl),
+              resource: _resource,
+              processors: _processors,
+              sampler: _sampler,
+              idGenerator: _idGenerator,
+              spanLimits: _spanLimits,
+            ));
   }
 
   @override
@@ -61,7 +64,8 @@ final class AlwaysOnSampler implements Sampler {
     required SpanKind spanKind,
     required Attributes attributes,
     required List<SpanLink> links,
-  }) => SamplingResult.recordAndSample;
+  }) =>
+      SamplingResult.recordAndSample;
 
   @override
   String get description => 'AlwaysOnSampler';
@@ -78,7 +82,8 @@ final class AlwaysOffSampler implements Sampler {
     required SpanKind spanKind,
     required Attributes attributes,
     required List<SpanLink> links,
-  }) => SamplingResult.drop;
+  }) =>
+      SamplingResult.drop;
 
   @override
   String get description => 'AlwaysOffSampler';
@@ -98,9 +103,11 @@ final class ParentBasedSampler implements Sampler {
     Sampler? localParentSampled,
     Sampler? localParentNotSampled,
   })  : _remoteParentSampled = remoteParentSampled ?? const AlwaysOnSampler(),
-        _remoteParentNotSampled = remoteParentNotSampled ?? const AlwaysOffSampler(),
+        _remoteParentNotSampled =
+            remoteParentNotSampled ?? const AlwaysOffSampler(),
         _localParentSampled = localParentSampled ?? const AlwaysOnSampler(),
-        _localParentNotSampled = localParentNotSampled ?? const AlwaysOffSampler();
+        _localParentNotSampled =
+            localParentNotSampled ?? const AlwaysOffSampler();
 
   @override
   SamplingResult shouldSample({
@@ -114,27 +121,47 @@ final class ParentBasedSampler implements Sampler {
     final parentSpan = parentContext.span;
     if (parentSpan == null || !parentSpan.spanContext.isValid) {
       return _root.shouldSample(
-        parentContext: parentContext, traceId: traceId, name: name,
-        spanKind: spanKind, attributes: attributes, links: links,
+        parentContext: parentContext,
+        traceId: traceId,
+        name: name,
+        spanKind: spanKind,
+        attributes: attributes,
+        links: links,
       );
     }
     final parentSampled = parentSpan.spanContext.isSampled;
     if (parentSpan.spanContext.isRemote) {
       return parentSampled
           ? _remoteParentSampled.shouldSample(
-              parentContext: parentContext, traceId: traceId, name: name,
-              spanKind: spanKind, attributes: attributes, links: links)
+              parentContext: parentContext,
+              traceId: traceId,
+              name: name,
+              spanKind: spanKind,
+              attributes: attributes,
+              links: links)
           : _remoteParentNotSampled.shouldSample(
-              parentContext: parentContext, traceId: traceId, name: name,
-              spanKind: spanKind, attributes: attributes, links: links);
+              parentContext: parentContext,
+              traceId: traceId,
+              name: name,
+              spanKind: spanKind,
+              attributes: attributes,
+              links: links);
     }
     return parentSampled
         ? _localParentSampled.shouldSample(
-            parentContext: parentContext, traceId: traceId, name: name,
-            spanKind: spanKind, attributes: attributes, links: links)
+            parentContext: parentContext,
+            traceId: traceId,
+            name: name,
+            spanKind: spanKind,
+            attributes: attributes,
+            links: links)
         : _localParentNotSampled.shouldSample(
-            parentContext: parentContext, traceId: traceId, name: name,
-            spanKind: spanKind, attributes: attributes, links: links);
+            parentContext: parentContext,
+            traceId: traceId,
+            name: name,
+            spanKind: spanKind,
+            attributes: attributes,
+            links: links);
   }
 
   @override

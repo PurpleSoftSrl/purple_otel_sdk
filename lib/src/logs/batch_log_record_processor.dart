@@ -25,7 +25,8 @@ final class BatchLogRecordProcessor implements LogRecordProcessor {
 
   BatchLogRecordProcessor(this._exporter, {BatchConfig? config})
       : _config = config ?? const BatchConfig() {
-    _flushTimer = Timer.periodic(_config.scheduleDelay, (_) => _scheduledFlush());
+    _flushTimer =
+        Timer.periodic(_config.scheduleDelay, (_) => _scheduledFlush());
   }
 
   int get droppedCount => _droppedCount;
@@ -49,8 +50,7 @@ final class BatchLogRecordProcessor implements LogRecordProcessor {
 
   void _flush() {
     if (_active.isEmpty) return;
-    final batch = List<LogRecord>.of(
-        _active.take(_config.maxExportBatchSize));
+    final batch = List<LogRecord>.of(_active.take(_config.maxExportBatchSize));
     _active.removeRange(0, min(batch.length, _active.length));
     _exporter.export(batch);
   }

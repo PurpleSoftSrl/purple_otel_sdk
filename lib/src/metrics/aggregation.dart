@@ -32,7 +32,8 @@ final class DoubleSumAggregator {
     _value += value;
   }
 
-  DoubleSumAggregator copy() => DoubleSumAggregator(monotonic: _monotonic).._value = _value;
+  DoubleSumAggregator copy() =>
+      DoubleSumAggregator(monotonic: _monotonic).._value = _value;
   void reset() => _value = 0.0;
 }
 
@@ -50,7 +51,8 @@ final class LastValueAggregator<T extends num> {
     _hasValue = true;
   }
 
-  LastValueAggregator<T> copy() => LastValueAggregator<T>(_value).._hasValue = _hasValue;
+  LastValueAggregator<T> copy() =>
+      LastValueAggregator<T>(_value).._hasValue = _hasValue;
   void reset() => _hasValue = false;
 }
 

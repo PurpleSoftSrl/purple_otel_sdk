@@ -57,7 +57,8 @@ final class SDKSpan implements Span {
 
   @override
   void setAttribute(String key, AttributeValue value) {
-    if (_attributes != null && _attributes!.length >= _limits.maxAttributes) return;
+    if (_attributes != null && _attributes!.length >= _limits.maxAttributes)
+      return;
     _attributes ??= {};
     _attributes![key] = value;
   }
@@ -75,7 +76,10 @@ final class SDKSpan implements Span {
   void addEvent(String name, {DateTime? timestamp, Attributes? attributes}) {
     if (_events != null && _events!.length >= _limits.maxEvents) return;
     _events ??= [];
-    _events!.add(SpanEvent(name: name, timestamp: timestamp ?? DateTime.now(), attributes: attributes));
+    _events!.add(SpanEvent(
+        name: name,
+        timestamp: timestamp ?? DateTime.now(),
+        attributes: attributes));
   }
 
   @override
@@ -86,20 +90,23 @@ final class SDKSpan implements Span {
   }
 
   @override
-  void recordException(Object exception, {StackTrace? stackTrace, Attributes? attributes}) {
+  void recordException(Object exception,
+      {StackTrace? stackTrace, Attributes? attributes}) {
     final attrs = <String, AttributeValue>{
       'exception.type': AttributeValue.string(exception.runtimeType.toString()),
       'exception.message': AttributeValue.string(exception.toString()),
     };
     if (stackTrace != null) {
-      attrs['exception.stacktrace'] = AttributeValue.string(stackTrace.toString());
+      attrs['exception.stacktrace'] =
+          AttributeValue.string(stackTrace.toString());
     }
     if (attributes != null) {
       for (final key in attributes.entries.keys) {
         attrs[key] = attributes.entries[key]!;
       }
     }
-    addEvent('exception', timestamp: DateTime.now(), attributes: Attributes.of(attrs));
+    addEvent('exception',
+        timestamp: DateTime.now(), attributes: Attributes.of(attrs));
   }
 
   @override
@@ -120,7 +127,8 @@ final class SDKSpan implements Span {
   }
 
   String get name => _name;
-  Map<String, AttributeValue> get attributes => Map.unmodifiable(_attributes ?? {});
+  Map<String, AttributeValue> get attributes =>
+      Map.unmodifiable(_attributes ?? {});
   List<SpanEvent> get events => List.unmodifiable(_events ?? []);
   List<SpanLink> get links => List.unmodifiable(_links ?? []);
 }

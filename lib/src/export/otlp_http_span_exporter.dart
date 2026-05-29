@@ -14,7 +14,8 @@ final class OtlpHttpSpanExporter implements SpanExporter {
     Resource? resource,
     InstrumentationScope? scope,
     int timeoutMs = 10000,
-  })  : _client = OtlpHttpClient(endpoint: endpoint, headers: headers, timeoutMs: timeoutMs),
+  })  : _client = OtlpHttpClient(
+            endpoint: endpoint, headers: headers, timeoutMs: timeoutMs),
         _resource = resource,
         _scope = scope;
 
@@ -22,7 +23,8 @@ final class OtlpHttpSpanExporter implements SpanExporter {
   Future<ExportResult> export(List<Span> items) async {
     if (items.isEmpty) return ExportResult.success();
     try {
-      final body = OtlpTraceEncoder.encode(items, resource: _resource, scope: _scope);
+      final body =
+          OtlpTraceEncoder.encode(items, resource: _resource, scope: _scope);
       final status = await _client.send('/v1/traces', body);
       if (status == 200 || status == 204) {
         return ExportResult.success();

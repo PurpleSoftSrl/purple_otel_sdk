@@ -17,7 +17,6 @@ export 'src/export/otlp_http_log_record_exporter.dart' show OtlpHttpLogRecordExp
 export 'src/export/otlp_http_span_exporter.dart' show OtlpHttpSpanExporter;
 export 'src/export/otlp_http_metric_exporter.dart' show OtlpHttpMetricExporter;
 export 'src/export/console_metric_exporter.dart' show ConsoleMetricExporter;
-export 'src/export/otel_http_client.dart' show OtelHttpClient;
 export 'src/context/zone_context_storage.dart' show ZoneContextStorage;
 export 'src/metrics/sdk_meter_provider.dart' show SDKMeterProvider;
 export 'src/metrics/sdk_meter.dart' show SDKMeter;
@@ -25,3 +24,5 @@ export 'src/metrics/instruments.dart' show LongCounter, DoubleCounter, LongUpDow
 export 'src/metrics/metric_reader.dart' show PeriodicExportingMetricReader, Temporality;
 export 'src/metrics/metric_data.dart' show MetricPoint, HistogramPoint, MetricCollection;
 export 'src/metrics/aggregation.dart' show SumAggregator, HistogramAggregator, DoubleHistogramAggregator;
+export 'src/export/otel_http_client.dart' show OtelHttpClient;
+export 'src/export/in_memory_span_exporter.dart' show InMemorySpanExporter;

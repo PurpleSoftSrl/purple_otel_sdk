@@ -30,11 +30,16 @@ final class PeriodicExportingMetricReader implements MetricReader {
   }
 
   void registerCounter(LongCounter counter) => _counters.add(counter);
-  void registerDoubleCounter(DoubleCounter counter) => _doubleCounters.add(counter);
-  void registerUpDownCounter(LongUpDownCounter counter) => _upDownCounters.add(counter);
-  void registerDoubleUpDownCounter(DoubleUpDownCounter counter) => _doubleUpDownCounters.add(counter);
-  void registerLongHistogram(LongHistogramImpl histogram) => _longHistograms.add(histogram);
-  void registerDoubleHistogram(DoubleHistogramImpl histogram) => _doubleHistograms.add(histogram);
+  void registerDoubleCounter(DoubleCounter counter) =>
+      _doubleCounters.add(counter);
+  void registerUpDownCounter(LongUpDownCounter counter) =>
+      _upDownCounters.add(counter);
+  void registerDoubleUpDownCounter(DoubleUpDownCounter counter) =>
+      _doubleUpDownCounters.add(counter);
+  void registerLongHistogram(LongHistogramImpl histogram) =>
+      _longHistograms.add(histogram);
+  void registerDoubleHistogram(DoubleHistogramImpl histogram) =>
+      _doubleHistograms.add(histogram);
 
   void _collectAndExport() {
     if (_shutdown) return;
@@ -44,7 +49,8 @@ final class PeriodicExportingMetricReader implements MetricReader {
 
     for (final c in _counters) {
       final attrsBefore = c.store.cardinality.snapshotAttributes();
-      final snapshot = c.store.collectAndReset(_temporality == Temporality.delta);
+      final snapshot =
+          c.store.collectAndReset(_temporality == Temporality.delta);
       for (final entry in snapshot.entries) {
         final attrs = attrsBefore[entry.key];
         if (attrs != null) {
@@ -58,7 +64,8 @@ final class PeriodicExportingMetricReader implements MetricReader {
     }
 
     for (final c in _doubleCounters) {
-      final snapshot = c.store.collectAndReset(_temporality == Temporality.delta);
+      final snapshot =
+          c.store.collectAndReset(_temporality == Temporality.delta);
       for (final entry in snapshot.entries) {
         final attrs = c.store.cardinality.getAttributes(entry.key);
         if (attrs != null) {
@@ -72,7 +79,8 @@ final class PeriodicExportingMetricReader implements MetricReader {
     }
 
     for (final h in _doubleHistograms) {
-      final snapshot = h.store.collectAndReset(_temporality == Temporality.delta);
+      final snapshot =
+          h.store.collectAndReset(_temporality == Temporality.delta);
       for (final entry in snapshot.entries) {
         final attrs = h.store.cardinality.getAttributes(entry.key);
         if (attrs != null) {
