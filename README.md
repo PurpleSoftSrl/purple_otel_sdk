@@ -523,6 +523,38 @@ tracer.startSpan() → SDKSpan (lazy attrs) → span.end()
 
 ---
 
+## Quality & Reliability
+
+PurpleOTel is built to run in production — not just pass a quick demo. Every component is hardened against edge cases discovered through adversarial testing.
+
+### By the Numbers
+
+| Metric | Value |
+|--------|-------|
+| Total tests | **256** (95 SDK + 107 logger + 54 Flutter) |
+| Test failures | **0** |
+| Red team audit | **Passed** — 8 critical bugs found and fixed |
+| NaN/Infinity safe | ✅ Rejected at aggregation layer |
+| Config validation | ✅ Batch processors guard against zero/invalid values |
+| Span immutability | ✅ All mutations blocked after `end()` |
+| Error truncation | ✅ Messages limited to 256 characters |
+| Cyclic data safe | ✅ hashCode and equality protected against cyclic maps |
+| Disposed dependencies | ✅ All callbacks try-catch wrapped |
+
+### Production Hardening
+
+- **Span end() immutability**: After a span is ended, `setStatus()`, `recordException()`, `updateName()` are no-ops. No accidental mutations in production.
+- **NaN/Infinity rejection**: `DoubleHistogramAggregator` silently drops `NaN`, `+Infinity`, `-Infinity`. Your dashboards stay accurate.
+- **Config validation**: `BatchConfig.validated()` ensures `maxQueueSize` and `maxExportBatchSize` are always ≥ 1. Zero crashes from misconfiguration.
+- **Safe error handling**: If an exception's `toString()` method itself throws, the SDK catches it and records `<error>` instead of crashing.
+- **Cyclic map protection**: If structured log properties contain self-referencing maps, `hashCode` computation uses try-catch fallback instead of `StackOverflowError`.
+- **Double-initialization guard**: `FlutterOtelInitializer` can be called multiple times safely — only the first call takes effect.
+- **Disposed tracer safety**: All observer callbacks are wrapped in try-catch. A disposed tracer never crashes the Flutter framework.
+- **String interning**: Attribute keys are interned to minimize GC pressure in high-throughput scenarios.
+- **Lazy allocation**: Span attribute maps, event lists, and link lists are only allocated when first used. Zero-cost spans in the common case.
+
+---
+
 ## Production Deployment
 
 ### Retry with Backoff
