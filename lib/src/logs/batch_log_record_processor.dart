@@ -13,6 +13,14 @@ final class BatchConfig {
     this.maxExportBatchSize = 512,
     this.scheduleDelay = const Duration(seconds: 5),
   });
+
+  BatchConfig validated() {
+    return BatchConfig(
+      maxQueueSize: maxQueueSize < 1 ? 1 : maxQueueSize,
+      maxExportBatchSize: maxExportBatchSize < 1 ? 1 : maxExportBatchSize,
+      scheduleDelay: scheduleDelay,
+    );
+  }
 }
 
 final class BatchLogRecordProcessor implements LogRecordProcessor {
@@ -24,9 +32,8 @@ final class BatchLogRecordProcessor implements LogRecordProcessor {
   int _droppedCount = 0;
 
   BatchLogRecordProcessor(this._exporter, {BatchConfig? config})
-      : _config = config ?? const BatchConfig() {
-    _flushTimer =
-        Timer.periodic(_config.scheduleDelay, (_) => _scheduledFlush());
+      : _config = (config ?? const BatchConfig()).validated() {
+    _flushTimer = Timer.periodic(_config.scheduleDelay, (_) => _scheduledFlush());
   }
 
   int get droppedCount => _droppedCount;
@@ -50,7 +57,9 @@ final class BatchLogRecordProcessor implements LogRecordProcessor {
 
   void _flush() {
     if (_active.isEmpty) return;
-    final batch = List<LogRecord>.of(_active.take(_config.maxExportBatchSize));
+    final take = _config.maxExportBatchSize;
+    if (take == 0) return;
+    final batch = List<LogRecord>.of(_active.take(take));
     _active.removeRange(0, min(batch.length, _active.length));
     _exporter.export(batch);
   }

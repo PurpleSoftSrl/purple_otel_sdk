@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:purple_otel_api/purple_otel_api.dart';
 import '../logs/batch_log_record_processor.dart' show BatchConfig;
@@ -13,7 +12,7 @@ final class BatchSpanProcessor implements SpanProcessor {
   int _droppedCount = 0;
 
   BatchSpanProcessor(this._exporter, {BatchConfig? config})
-      : _config = config ?? const BatchConfig() {
+      : _config = (config ?? const BatchConfig()).validated() {
     _flushTimer = Timer.periodic(_config.scheduleDelay, (_) => _forceFlush());
   }
 
@@ -43,8 +42,10 @@ final class BatchSpanProcessor implements SpanProcessor {
 
   void _forceFlush() {
     if (_active.isEmpty) return;
-    final batch = List<Span>.of(_active.take(_config.maxExportBatchSize));
-    _active.removeRange(0, min(batch.length, _active.length));
+    final take = _config.maxExportBatchSize;
+    if (take == 0) return;
+    final batch = List<Span>.of(_active.take(take));
+    _active.removeRange(0, batch.length);
     _exporter.export(batch);
   }
 

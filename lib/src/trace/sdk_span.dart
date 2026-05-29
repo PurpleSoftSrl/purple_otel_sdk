@@ -52,11 +52,13 @@ final class SDKSpan implements Span {
 
   @override
   void setStatus(SpanStatus status) {
+    if (_ended) return;
     _status = status;
   }
 
   @override
   void setAttribute(String key, AttributeValue value) {
+    if (_ended) return;
     if (_attributes != null && _attributes!.length >= _limits.maxAttributes)
       return;
     _attributes ??= {};
@@ -92,9 +94,10 @@ final class SDKSpan implements Span {
   @override
   void recordException(Object exception,
       {StackTrace? stackTrace, Attributes? attributes}) {
+    if (_ended) return;
     final attrs = <String, AttributeValue>{
-      'exception.type': AttributeValue.string(exception.runtimeType.toString()),
-      'exception.message': AttributeValue.string(exception.toString()),
+      'exception.type': AttributeValue.string(_safeStr(exception.runtimeType)),
+      'exception.message': AttributeValue.string(_safeStr(exception)),
     };
     if (stackTrace != null) {
       attrs['exception.stacktrace'] =
@@ -111,6 +114,7 @@ final class SDKSpan implements Span {
 
   @override
   void updateName(String name) {
+    if (_ended) return;
     _name = name;
   }
 
@@ -131,4 +135,12 @@ final class SDKSpan implements Span {
       Map.unmodifiable(_attributes ?? {});
   List<SpanEvent> get events => List.unmodifiable(_events ?? []);
   List<SpanLink> get links => List.unmodifiable(_links ?? []);
+
+  static String _safeStr(Object obj) {
+    try {
+      return obj.toString();
+    } catch (_) {
+      return '<error>';
+    }
+  }
 }

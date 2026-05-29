@@ -138,6 +138,7 @@ final class DoubleHistogramAggregator {
   double get max => _max;
 
   void record(double value) {
+    if (value.isNaN || value.isInfinite) return;
     _sum += value;
     _count++;
     if (!_hasMinMax) {
