@@ -46,6 +46,17 @@ final class OtelHttpClient extends http.BaseClient {
         'http.url', AttributeValue.string(request.url.toString()));
     span.setAttribute('http.host', AttributeValue.string(request.url.host));
 
+    // Stable OTel HTTP client semantic conventions (v1.23+), emitted alongside
+    // the legacy http.* keys above during the transition to the stable spec.
+    span.setAttribute(
+        'http.request.method', AttributeValue.string(request.method));
+    span.setAttribute(
+        'url.full', AttributeValue.string(request.url.toString()));
+    span.setAttribute('url.scheme', AttributeValue.string(request.url.scheme));
+    span.setAttribute(
+        'server.address', AttributeValue.string(request.url.host));
+    span.setAttribute('server.port', AttributeValue.int(request.url.port));
+
     final carrier = <String, String>{};
     final ctx = Context.root.withValue(spanContextKey, span);
     W3CTraceContextPropagator.inject(ctx, carrier);
@@ -66,6 +77,8 @@ final class OtelHttpClient extends http.BaseClient {
 
     span.setAttribute(
         'http.status_code', AttributeValue.int(response.statusCode));
+    span.setAttribute(
+        'http.response.status_code', AttributeValue.int(response.statusCode));
 
     if (response.statusCode >= 500) {
       span.setStatus(SpanStatus.error('HTTP ${response.statusCode}'));

@@ -147,6 +147,11 @@ final class SDKSpan implements Span {
     final attrs = <String, AttributeValue>{
       'exception.type': AttributeValue.string(_safeStr(exception.runtimeType)),
       'exception.message': AttributeValue.string(_safeStr(exception)),
+      // OTel exception semantic convention. Defaults to false; a caller that
+      // knows the exception escaped the span scope can override it by passing
+      // `attributes: {'exception.escaped': AttributeValue.bool(true)}` (the
+      // caller-supplied attributes are merged last, below).
+      'exception.escaped': const AttributeValue.bool(false),
     };
     if (stackTrace != null) {
       attrs['exception.stacktrace'] =
