@@ -1,8 +1,24 @@
+## 0.1.8
+
+- Includes 0.1.6 and 0.1.7 below, which were tagged but never published to pub.dev.
+- Releases are now published from GitHub Actions on version tags.
+
+## 0.1.7
+
+- `OtelHttpClient.send` emits the stable OpenTelemetry HTTP client semantic conventions (`http.request.method`, `url.full`, `url.scheme`, `server.address`, `server.port` and `http.response.status_code`) alongside the legacy `http.*` keys.
+- `SDKSpan.recordException` emits `exception.escaped` (default `false`; can be overridden through `attributes`).
+
+## 0.1.6
+
+- Version bump only, no code changes.
+
 ## 0.1.5
 
+- No release notes were recorded for this version.
 
 ## 0.1.4
 
+- No release notes were recorded for this version.
 
 ## 0.1.0
 
